@@ -23,8 +23,11 @@ import java.util.UUID;
 public class OrderService {
     @Autowired
     OrderRepo orderRepo;
-    @Autowired
-    WebClient webClient;
+   private final WebClient.Builder webClientBuilder;
+
+    public OrderService(WebClient.Builder webClientBuild) {
+        this.webClientBuilder = webClientBuild;
+    }
 
 
     public void placeOrder(OrderRequest orderRequest) throws IllegalAccessException {
@@ -40,8 +43,8 @@ public class OrderService {
 
 
         // call Inventory Service, and placeOrder if product is in
-        InventoryResp[] inventoryRespArr = webClient.get()
-                .uri("http://localhost:8076/api/inventory",
+        InventoryResp[] inventoryRespArr = webClientBuilder.build().get()
+                .uri("http://inventory-service/api/inventory",
                         uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResp[].class)
