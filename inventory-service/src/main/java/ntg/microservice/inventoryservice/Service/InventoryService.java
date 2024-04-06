@@ -13,7 +13,7 @@ public class InventoryService {
     @Autowired
     InventoryRepo inventoryRepo;
 
-    @Transactional(readOnly = true)
+//    @Transactional(readOnly = true)
     public List<InventoryResp> isInStock(List<String> skuCode) {
         return inventoryRepo.findBySkuCodeIn(skuCode).stream()
                 .map(inventory ->

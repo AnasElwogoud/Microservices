@@ -7,6 +7,7 @@ import ntg.microservice.orderservice.Repository.OrderRepo;
 import ntg.microservice.orderservice.dto.InventoryResp;
 import ntg.microservice.orderservice.dto.OrderLineItemDto;
 import ntg.microservice.orderservice.dto.OrderRequest;
+import ntg.microservice.orderservice.feign.OrderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +24,11 @@ import java.util.UUID;
 public class OrderService {
     @Autowired
     OrderRepo orderRepo;
-   private final WebClient.Builder webClientBuilder;
-
-    public OrderService(WebClient.Builder webClientBuild) {
-        this.webClientBuilder = webClientBuild;
-    }
+    @Autowired
+    OrderInterface orderInterface;
 
 
-    public void placeOrder(OrderRequest orderRequest) throws IllegalAccessException {
+    public void placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
         List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemDtoList().stream().map(this::mapToDto).toList();
@@ -43,15 +41,19 @@ public class OrderService {
 
 
         // call Inventory Service, and placeOrder if product is in
-        InventoryResp[] inventoryRespArr = webClientBuilder.build().get()
-                .uri("http://inventory-service/api/inventory",
-                        uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
-                .retrieve()
-                .bodyToMono(InventoryResp[].class)
-                .block();
+        List<InventoryResp> inStock = orderInterface.isInStock(skuCodes);
 
-        boolean allProductsInStock = Arrays.stream(Objects.requireNonNull(inventoryRespArr))
-                .allMatch(InventoryResp::isInStock);
+        boolean allProductsInStock = inStock.stream().allMatch(InventoryResp::isInStock);
+
+//        InventoryResp[] inventoryRespArr = webClientBuilder.build().get()
+//                .uri("http://inventory-service/api/inventory",
+//                        uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
+//                .retrieve()
+//                .bodyToMono(InventoryResp[].class)
+//                .block();
+//
+//        boolean allProductsInStock = Arrays.stream(Objects.requireNonNull(inventoryRespArr))
+//                .allMatch(InventoryResp::isInStock);
 
         if (allProductsInStock) {
             orderRepo.save(order);
