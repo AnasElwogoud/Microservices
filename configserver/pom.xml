@@ -11,7 +11,7 @@
     <groupId>com.eazybytes</groupId>
     <artifactId>configserver</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>config-server</name>
+    <name>configserver</name>
     <description>Config Server for production microservices</description>
     <properties>
         <java.version>17</java.version>

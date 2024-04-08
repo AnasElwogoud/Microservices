@@ -12,7 +12,7 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @PostMapping
+    @PostMapping("add")
     @ResponseStatus(HttpStatus.CREATED)
     public String placeOrder(@RequestBody OrderRequest orderRequest) throws IllegalAccessException {
         orderService.placeOrder(orderRequest);
