@@ -9,6 +9,7 @@ import ntg.microservice.orderservice.dto.OrderLineItemDto;
 import ntg.microservice.orderservice.dto.OrderRequest;
 import ntg.microservice.orderservice.feign.OrderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,6 +28,8 @@ public class OrderService {
     @Autowired
     OrderInterface orderInterface;
 
+//    @Value("${microservice.inventory-service.endpoint.uri}")
+//    private String ENDPOINT_URL;
 
     public void placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
