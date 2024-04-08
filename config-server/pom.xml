@@ -8,10 +8,10 @@
         <version>3.2.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.eazybytes</groupId>
-    <artifactId>configserver</artifactId>
+    <groupId>ntg.microservice</groupId>
+    <artifactId>config-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>configserver</name>
+    <name>config-server</name>
     <description>Config Server for production microservices</description>
     <properties>
         <java.version>17</java.version>
